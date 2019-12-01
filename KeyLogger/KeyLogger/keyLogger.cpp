@@ -1,5 +1,4 @@
-#ifndef UNICODE
-#define UNICODE
+#pragma once
 
 #include "KeybHook.h"
 #include "RunOnStartup.h"
@@ -23,4 +22,3 @@ static void hide()
 {
 	ShowWindow(GetConsoleWindow(), SW_HIDE);
 }
-#endif
