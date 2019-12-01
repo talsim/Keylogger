@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <Windows.h>
 static std::wstring findexePth();
 
 bool addToStartup()
