@@ -1,5 +1,5 @@
 # Cpp-KeyLogger (Completed)
-KeyLogger that is written for Windows operating system with WinAPI.
+KeyLogger that is written for Windows operating system using WinAPI.
 
 The KeyLogger were tested and experienced in Windows 10 Virtual Machine using VirtualBox.
 
